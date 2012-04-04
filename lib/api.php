@@ -1,0 +1,91 @@
+<?php
+session_start();
+require_once('ff_oauth/friendfeedv2.php');
+require_once('ff_oauth/JSON.php');
+require_once('../conf/config.php');
+
+$session= FriendFeed::FriendFeed_OAuth(CONSUMER_KEY, CONSUMER_SECRET, $access_token, UA);
+
+$username = $_REQUEST['user'];
+$start = $_REQUEST['start'];
+$num = $_REQUEST['num'];
+
+if($_REQUEST['command']=='likes'){
+  $feed = $session->fetch_user_likes_feed($username, null, $start, $num);
+
+  foreach($feed->entries as $entry){
+    $user = $entry->from;
+    if(!isset($array[$user->id])){
+      $array[$user->id]=0;
+    }
+    $array[$user->id]=$array[$user->id]+$weight['user_like'];
+  }
+  echo json_encode($array);
+}
+
+if($_REQUEST['command']=='comments'){
+  $feed = $session->fetch_user_comments_feed($username, null, $start, $num);
+
+  foreach($feed->entries as $entry){
+    $user = $entry->from;
+    if($entry->comments){
+      foreach($entry->comments as $comment){
+        $me = $comment->from;
+        if($me->id==$username){
+          if(!isset($array[$user->id])){
+            $array[$user->id]=0;
+          }
+          $array[$user->id]=$array[$user->id]+$weight['user_comment'];
+        }
+      }
+    }
+  }
+  echo json_encode($array);
+}
+
+if($_REQUEST['command']=='posts'){
+  $feed = $session->fetch_user_feed($username, null, $start, $num);
+
+  foreach($feed->entries as $entry){
+    if($entry->likes){
+      foreach($entry->likes as $like){
+        $user = $like->from;
+        if(!isset($array[$user->id])){
+          $array[$user->id]=0;
+        }
+        $array[$user->id]=$array[$user->id]+$weight['post_like'];
+      }
+    }
+
+    if($entry->comments){
+      foreach($entry->comments as $comment){
+        $user = $comment->from;
+        if(!isset($array[$user->id])){
+          $array[$user->id]=0;
+        }
+        $array[$user->id]=$array[$user->id]+$weight['post_comment'];
+      }
+    }
+  }
+  echo json_encode($array);
+}
+
+if($_REQUEST['command']=='p2ff'){
+
+  if(trim($_REQUEST['comment'])===''){
+    $comment = null;
+  }
+  else{
+    $comment = stripslashes(preg_replace('/\%26/', '&', $_REQUEST['comment']));
+  }
+
+  if(trim($_REQUEST['body'])===''){
+    $body = '#fftop20';
+  }
+  else{
+    $body = stripslashes(preg_replace('/\%26/', '&', $_REQUEST['body']));
+  }
+
+  $session->publish_message($body, null, $comment, array($_REQUEST['images']));
+}
+?>
