@@ -4,6 +4,16 @@ require_once('ff_oauth/friendfeedv2.php');
 require_once('ff_oauth/JSON.php');
 require_once('../conf/config.php');
 
+if (isset($_SESSION['access_token'])){
+    $access_token = $_SESSION['access_token'];
+}
+else{
+$at_v = json_decode(base64_decode($_REQUEST['x']));
+$access_token = array('oauth_token_secret'=>$at_v->oauth_token_secret,
+                        'oauth_token'=>$at_v->oauth_token,
+                        'username'=>$at_v->username);
+}
+
 $session= FriendFeed::FriendFeed_OAuth(CONSUMER_KEY, CONSUMER_SECRET, $access_token, UA);
 
 $username = $_REQUEST['user'];

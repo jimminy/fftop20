@@ -1,4 +1,5 @@
 <?php
+/*----------API REQUIREMENTS------------*/
 #OAuth Keys provided from Friendfeed
 define('CONSUMER_KEY','xxxx');
 define('CONSUMER_SECRET', 'xxxxx');
@@ -6,6 +7,7 @@ define('CONSUMER_SECRET', 'xxxxx');
 #User Agent
 define('UA', 'Unknown - FFv2-API/v0.4');
 
+/*----------APP REQUIREMENTS-----------*/
 #Base Path
 $path = 'http://localhost.com/';
 

@@ -1,7 +1,7 @@
   <section class="container">
     <header class="sixteen columns">
-      <h1 class="remove-bottom" style="margin-top: 20px">Friendfeed Top Application</h1>
-      <h5>*byline*</h5>
+      <h1 class="remove-bottom" style="margin-top: 20px">Friendfeed Top 20</h1>
+      <h5>An alternative to the fftopten.</h5>
       <hr />
     </header>
     <section class="two-thirds column">
@@ -39,6 +39,8 @@
           <li>Your last 300 likes. The user who posted content you liked will be counted once.</li>
           <li>Comments you made on other user's posts. Uses the last 300 posts you commented on. Every comment is counted twice, and provided that user.</li>
         </ul>
+        <p>Feedback at <a href="http://friendfeed.com/25hrlabs">25hrlabs on Friendfeed</a></p>
+        <p style="margin-top: -10px">Copyright 2011 by <a href="http://friendfeed.com/jimminy">Jimminy</a></p>
       </nav>
     </sidebar>
   </section>

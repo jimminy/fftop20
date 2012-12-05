@@ -12,6 +12,10 @@ if (empty($_SESSION['access_token']) || empty($_SESSION['access_token']['oauth_t
   header('Location: ./clearsessions.php');
 }
 
+    $access_token = $_SESSION['access_token'];
+    //NOTE: Pass-thru to get data to api.php. Fixed bug with private accounts having empty variables.
+    $xx = base64_encode(json_encode($access_token));
+
   $session= FriendFeed::FriendFeed_OAuth(CONSUMER_KEY, CONSUMER_SECRET, $access_token, UA);
 
   $feed= $session->fetch_home_feed();
@@ -24,7 +28,8 @@ if (empty($_SESSION['access_token']) || empty($_SESSION['access_token']['oauth_t
         $data = array(
           'user' => $username,
           'start' => $i*$num,
-          'num' => $num);
+          'num' => $num,
+          'x' => $xx);
 
         $urls[] = build_url($path, $command['likes'], $data);
         $urls[] = build_url($path, $command['comments'], $data);
@@ -58,29 +63,28 @@ if (empty($_SESSION['access_token']) || empty($_SESSION['access_token']['oauth_t
     $counts =array_slice($array, 0, $n);
     $k=1;
 
-    $photo_array='';
+    $photos=array();
     $comment='';
-    $content = '';
+    $content='';
+    $photo_array='';
+    $keys=array();
 
     foreach ($counts as $key => $val) {
       $img = $session->fetch_picture($key);
 
       $name = $session->fetch_user_feed($key,null,0,1);
       $name = $name->name;
-      if($k<$n){
-        $comment.=$name .' http://friendfeed.com/'.$key.', ';
-        $photo_array.= $img.',';
-      }
-      else{
-        $comment.=$name .' http://friendfeed.com/'.$key;
-        $photo_array.= $img;
-      }
+
+      $comment.=$name .' http://friendfeed.com/'.$key.', ';
+      $photos[]= $img;
+      $keys[]= $key;
 
       $content .= '<article class="one-third column alpha item"><a href="http://friendfeed.com/'. $key .'" title="'. $name .'" target="_blank"><img src="'.$img.'" /></a><h2>'. $k .'.</h2> <p>'. $name .'</p> <p>Points: '. $val .'</p></article>';
 
       $k = $k+1;
     }
 
+    $photo_array=image_create($path, $photos, $keys);
 }
 else{
   session_destroy();
