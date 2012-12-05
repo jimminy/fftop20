@@ -10,6 +10,7 @@ define('UA', 'Unknown - FFv2-API/v0.4');
 /*----------APP REQUIREMENTS-----------*/
 #Base Path
 $path = 'http://localhost.com/';
+$file_path = '/'
 
 #Commands: Used for internal requests
 $command['likes'] = 'likes';

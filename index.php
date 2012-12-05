@@ -63,28 +63,34 @@ if (empty($_SESSION['access_token']) || empty($_SESSION['access_token']['oauth_t
     $counts =array_slice($array, 0, $n);
     $k=1;
 
-    $photos=array();
+    $photo_array = array();
     $comment='';
-    $content='';
-    $photo_array='';
-    $keys=array();
+    $content = '';
+    $keys = array();
 
     foreach ($counts as $key => $val) {
       $img = $session->fetch_picture($key);
 
       $name = $session->fetch_user_feed($key,null,0,1);
       $name = $name->name;
-
-      $comment.=$name .' http://friendfeed.com/'.$key.', ';
-      $photos[]= $img;
-      $keys[]= $key;
+      if($k<$n){
+        $comment.=$name .' http://friendfeed.com/'.$key.', ';
+        $photos[]= $img;
+        $keys[] = $key;
+      }
+      else{
+        $comment.=$name .' http://friendfeed.com/'.$key;
+        $photos[]= $img;
+        $keys[] = $key;
+      }
 
       $content .= '<article class="one-third column alpha item"><a href="http://friendfeed.com/'. $key .'" title="'. $name .'" target="_blank"><img src="'.$img.'" /></a><h2>'. $k .'.</h2> <p>'. $name .'</p> <p>Points: '. $val .'</p></article>';
 
       $k = $k+1;
     }
 
-    $photo_array=image_create($path, $photos, $keys);
+    $photo_array = image_create($file_path, $path, $photos, $keys);
+
 }
 else{
   session_destroy();
